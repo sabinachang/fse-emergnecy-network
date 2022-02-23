@@ -1,0 +1,41 @@
+<div class="container pt-4">
+  <div class="row">
+    <div class="col-12 form-group">
+      <div class="input-group">
+        <input
+          type="text"
+          class="form-control"
+          id="username-input"
+          placeholder="Search by Username"
+        />
+        <div class="input-group-append">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            id="username-search-button"
+          >
+            Search
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-12 form-group">
+      <select id="status-select" class="form-control">
+        <option value="" disabled selected>Select a status</option>
+        <option value="Ok">Ok</option>
+        <option value="Help">Help</option>
+        <option value="Emergency">Emergency</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-12">
+      <div id="users-list"></div>
+    </div>
+  </div>
+</div>
+<script>
+  window.role = '<%= user.role %>';
+</script>
+<script src="/users.js"></script>

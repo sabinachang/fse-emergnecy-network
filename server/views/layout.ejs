@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emergency Social Network</title>
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+    <script
+      src="https://kit.fontawesome.com/84b8de19e8.js"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+  <body class="d-flex flex-column">
+    <nav class="navbar navbar-expand-md navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="/">Emergency Social Network</a>
+        <% if (user) { %>
+        <button
+          class="navbar-toggler"
+          data-toggle="collapse"
+          data-target="#navbarMenu"
+        >
+          <span class="navbar-toggler-icon"></span>
+          <span id="post-count-nav" class="badge badge-dark"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarMenu">
+          <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+              <span class="navbar-text">
+                Welcome <%= user.username %>
+              </span>
+            </li>
+            <li class="nav-item">
+              <a href="/user-profile/<%= user.username %>" class="nav-link">
+                My profile
+              </a>
+            </li>
+            <li id="match-post" class="nav-item">
+              <a class="nav-link">
+                Matching qualification posts
+                <span id="post-count" class="badge badge-dark"></span>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/logout" class="nav-link">
+                Logout
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+      <% } %>
+    </nav>
+    <main>
+      <%- body %>
+    </main>
+    <footer class="py-4 bg-light">
+      <% if (user) { %>
+      <div class="d-flex justify-content-center">
+        <a class="tab d-flex align-items-center" href="/emergencies">
+          <i class="fas fa-home"></i>
+          <div class="ml-1 d-none d-md-block">Emergencies</div>
+        </a>
+        <a class="tab px-md-3 px-2 d-flex align-items-center" href="/map">
+          <i class="fa fa-map"></i>
+          <div class="ml-1 d-none d-md-block">Map</div>
+        </a>
+        <a class="tab px-md-3 px-2 d-flex align-items-center" href="/users">
+          <i class="fa fa-users"></i>
+          <div class="ml-1 d-none d-md-block">Citizens</div>
+        </a>
+        <a class="tab px-md-3 px-2 d-flex align-items-center" href="/channels">
+          <i class="far fa-comment-dots"></i>
+          <div class="ml-1 d-none d-md-block">Chats</div>
+        </a>
+        <a class="tab d-flex align-items-center" href="/shelters">
+          <i class="fas fa-hospital"></i>
+          <div class="ml-1 d-none d-md-block">Shelters</div>
+        </a>
+      </div>
+      <% } else { %>
+      <div class="container">
+        <p>
+          Proudly Developed with ❤️ by group SA4, Hanning (Charels) Gong, Zihan
+          (Hans) Li, Sabina Chang, Yang Zhao
+        </p>
+      </div>
+      <% } %>
+    </footer>
+    <% if (user) { -%>
+    <script src="/common.js"></script>
+    <% } -%>
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+    <%- script %>
+  </body>
+</html>

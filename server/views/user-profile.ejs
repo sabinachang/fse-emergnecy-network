@@ -1,0 +1,163 @@
+<div class="container">
+  <div class="card my-2">
+    <div class="card-body">
+      <h5 class="card-title">Username:</h5>
+      <p class="card-text text-muted"><%= user.username %></p>
+      <% if (isAdministrator) { %>
+      <div class="form-group d-flex">
+        <input
+          type="text"
+          class="form-control"
+          id="username-input"
+          placeholder="Change username"
+        />
+      </div>
+      <button id="change-username-btn" class="btn btn-link float-right">
+        Change
+      </button>
+      <% } %>
+    </div>
+  </div>
+  <% if (isAdministrator) { %>
+
+  <div class="card my-2">
+    <div class="card-body">
+      <h5 class="card-title">Password:</h5>
+      <form>
+        <div class="form-group">
+          <input
+            type="password"
+            class="form-control"
+            id="password-input"
+            placeholder="Change password"
+          />
+        </div>
+      </form>
+      <button id="change-password-btn" class="btn btn-link float-right">
+        Change
+      </button>
+    </div>
+  </div>
+
+  <div class="card my-2">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Account Status: </span>
+        <div class="dropdown show">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            role="button"
+            id="account-status-dropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Loading
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <button class="dropdown-item" id="active-btn">
+              Active
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" id="inactive-btn">
+              Inactive
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card my-2">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Privilege Level: </span>
+        <div class="dropdown show">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            role="button"
+            id="privilege-dropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Loading
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <button class="dropdown-item" id="citizen-btn">
+              Citizen
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" id="coordinator-btn">
+              Coordinator
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item" id="administrator-btn">
+              Administrator
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <% } %> <% if (isSelf) { %>
+  <div class="card my-2">
+    <div class="card-body">
+      <div class="d-flex justify-content-between align-items-center">
+        <span>Your Current Status: </span>
+        <div class="dropdown show">
+          <button
+            class="btn btn-secondary dropdown-toggle"
+            role="button"
+            id="statusDropdown"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+          >
+            Loading
+          </button>
+          <div class="dropdown-menu dropdown-menu-right">
+            <button class="dropdown-item d-flex flex-column" id="okBtn">
+              <div>
+                <span class="fas fa-check-circle text-success"></span> Ok
+              </div>
+              <small class="text-muted">I am OK: I do not need help.</small>
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item d-flex flex-column" id="helpBtn">
+              <div>
+                <span class="fa fa-exclamation-circle text-warning"></span> Help
+              </div>
+              <small class="text-muted"
+                >I need help, but this is not a life</small
+              >
+              <small class="text-muted"> threatening emergency</small>
+            </button>
+            <div class="dropdown-divider"></div>
+            <button class="dropdown-item d-flex flex-column" id="emergencyBtn">
+              <div>
+                <span class="fa fa-plus-circle text-danger"></span> Emergency
+              </div>
+              <small class="text-muted">I need help now: this is a life</small>
+              <small class="text-muted"> threatening emergency</small>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card my-2">
+    <div class="card-body">
+      <h5 class="card-title">Disaster relief qualification:</h5>
+      <p id="qualification-count" class="card-text text-muted"></p>
+      <button id="edit" class="btn btn-link float-right">Edit</button>
+    </div>
+  </div>
+  <% } %>
+</div>
+<script>
+  window.username = '<%= user.username %>';
+</script>
+<script src="/user-profile.js"></script>

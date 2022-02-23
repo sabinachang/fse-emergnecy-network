@@ -1,0 +1,14 @@
+.color-example {
+  display: inline-block;
+  height: 1rem;
+  width: 1rem;
+}
+
+.hidden {
+  display: none;
+}
+
+.table td.center,
+.table th.center {
+  text-align: center;
+}

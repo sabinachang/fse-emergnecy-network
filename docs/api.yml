@@ -1,0 +1,1045 @@
+openapi: 3.0.3
+info:
+  title: ESN Restful API Documentation
+  version: '1.0'
+  contact: {}
+  description: |-
+    ## ESN API - SA4
+
+    Some simple guidelines for our RESTful apis
+
+    1. all properties must use`camel_case`.
+    2. use plural nouns as endpoint names
+    3. no abbreviations, use full-name as much as possible to reduce confusion
+
+servers:
+  - url: 'https://esn-f20sa4.herokuapp.com/api'
+  - url: 'http://localhost:6003/api'
+paths:
+  /authorizations:
+    post:
+      operationId: post-authorization
+      summary: Creates or login the user
+      description: |-
+        This endpoint provides 3 functionalities:
+
+        1. logs in the user if the user has correct credentials
+        2. if username & password is not seen before, it will prompt for consent
+        3. if user gives consent to the endpoint, we will create the user
+      tags:
+        - Auth
+      responses:
+        '200':
+          description: |-
+            User creation or login succeed
+
+            Upon successful user creation/login, it will set a cookie with `token` field as JWT token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  username:
+                    type: string
+                  is_new:
+                    type: boolean
+                  show_welcome_message:
+                    type: boolean
+        '422':
+          description: The user put a banned username or has conflict username or put wrong password
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '409':
+          description: The username the user trying to create has conflict with existing user
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+                confirm_creation:
+                  type: boolean
+                  default: false
+              required:
+                - username
+                - password
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users:
+    get:
+      summary: list user
+      tags:
+        - User
+      parameters:
+        - in: query
+          name: username
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [ok, help, emergency]
+          required: false
+        - in: query
+          name: longitude
+          schema:
+            type: number
+            format: float
+          required: false
+        - in: query
+          name: latitude
+          schema:
+            type: number
+            format: float
+          required: false
+        - in: query
+          name: near
+          schema:
+            type: number
+            format: float
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          required: false
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 0
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /channels:
+    get:
+      summary: Get a list of channels for specific user
+      tags:
+        - Channel
+      parameters:
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          required: false
+      responses:
+        '200':
+          description: Successfully get a list of channels current User in
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Channel'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a channel for a specific user
+      tags:
+        - Channel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                usernames:
+                  type: array
+                  items:
+                    type: string
+      responses:
+        '200':
+          description: Find existing Channel
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '201':
+          description: Successfully Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Channel'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: User not exists
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{username}:
+    patch:
+      summary: Update specific user by username
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: Update user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      summary: Get the status of the user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /users/{username}/status:
+    get:
+      summary: Get the status of the user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: |-
+            Get status of user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: [ok, help, emergency]
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    patch:
+      summary: Update the status of the user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: Update status payload
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                status:
+                  type: string
+                  enum: [ok, help, emergency]
+              required:
+                - status
+      responses:
+        '200':
+          description: |-
+            Update status of user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /channels/{channelNameOrId}:
+    patch:
+      summary: update the state of channel
+      tags:
+        - Channel
+      parameters:
+        - in: path
+          name: channelNameOrId
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: update the state of channel
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mark_all_messages_read:
+                  type: boolean
+              required:
+                - mark_all_messages_read
+      responses:
+        '200':
+          description: |-
+            Update message read channel to
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Channel'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /channels/statushistories:
+    get:
+      summary: Get the status history of the peer user in the channel
+      tags:
+        - StatusHistory
+      parameters:
+        - in: query
+          name: channelId
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/StatusHistory'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /messages:
+    get:
+      summary: Get list of messages, could search by multiple criterials
+      tags:
+        - Message
+      parameters:
+        - in: query
+          name: channel
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: search
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Message'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+    post:
+      summary: Create a message in a specific channel
+      tags:
+        - Message
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                channel:
+                  type: string
+                content:
+                  type: string
+              required:
+                - channel
+                - content
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Message'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /shelters:
+    get:
+      summary: Get list of shelters
+      tags:
+        - Shelter
+      parameters:
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 10
+          required: false
+      responses:
+        '200':
+          description: Successfully get a list of shelters
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Shelter'
+    post:
+      summary: Create a shelter
+      tags:
+        - Shelter
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+                latitude:
+                  type: number
+                longitude:
+                  type: number
+                address:
+                  type: string
+              required:
+                - name
+                - address
+                - description
+                - longitude
+                - latitude
+      responses:
+        '201':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                $ref: '#/components/schemas/Shelter'
+  /emergencies:
+    get:
+      summary: list emergencies
+      tags:
+        - Emergency
+      parameters:
+        - in: query
+          name: afterDate
+          schema:
+            type: date
+          required: true
+        - in: query
+          name: longitude
+          schema:
+            type: number
+          required: true
+        - in: query
+          name: latitude
+          schema:
+            type: number
+          required: true
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          required: false
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 0
+          required: false
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Emergency'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /users/{username}/shelter:
+    patch:
+      summary: Change shelter of the user
+      tags:
+        - User
+        - Shelter
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      requestBody:
+        description: Update shelter payload
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /users/{username}/qualifications:
+    get:
+      summary: Get the qualifications of the user
+      tags:
+        - User
+      parameters:
+        - in: path
+          name: username
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: |-
+            Get qualifications of user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  qualifications:
+                    type: array
+                    items:
+                      type: string
+                      enum:
+                        [
+                          first aid responder,
+                          healthcare worker,
+                          machinery operator,
+                          rescuer,
+                          technician,
+                          firefighter,
+                          law enforcement officer,
+                        ]
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+    post:
+      summary: update qualifications of a user
+      tags:
+        - User
+      requestBody:
+        description: Update qualifications payload
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+              required:
+                - name
+      responses:
+        '201':
+          description: Successfully update an evacuation center's user list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Evacuation'
+                list:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                      [
+                        first aid responder,
+                        healthcare worker,
+                        machinery operator,
+                        rescuer,
+                        technician,
+                        firefighter,
+                        law enforcement officer,
+                      ]
+  /matchingPosts:
+    get:
+      summary: Get the matching posts of the user
+      tags:
+        - Matching Post
+      parameters:
+        - in: query
+          name: current
+          schema:
+            type: integer
+            default: 1
+          required: false
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 20
+          required: false
+      responses:
+        '200':
+          description: |-
+            Get matching posts of user
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/PaginationResponse'
+                  - type: object
+                    properties:
+                      data:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/MatchingPost'
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /matchingPosts/count:
+    get:
+      summary: Get the count of matching posts of the user
+      tags:
+        - Matching Post
+      responses:
+        '200':
+          description: |-
+            Get matching posts of user
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  count:
+                    type: integer
+        '401':
+          description: Not Authorized
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        username:
+          type: string
+        online:
+          type: boolean
+        status:
+          type: string
+          enum: [Ok, Help, Emergency]
+        status_last_updated_at:
+          type: string
+          format: date
+        qualification:
+          type: array
+          items:
+            type: string
+            enum:
+              [
+                'first aid responder',
+                'healthcare worker',
+                'machinery operator',
+                'rescuer',
+                'technician',
+                'firefighter',
+                'law enforcement officer',
+              ]
+        coordinates:
+          type: object
+          properties:
+            longitude:
+              type: number
+              format: float
+            latitude:
+              type: number
+              format: float
+      required:
+        - username
+        - online
+    Shelter:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: boolean
+        coordinates:
+          type: object
+          properties:
+            longitude:
+              type: number
+              format: float
+            latitude:
+              type: number
+              format: float
+        address:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    StatusHistory:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/User'
+        status:
+          type: string
+          enum: [ok, help, emergency]
+        created_at:
+          type: string
+          format: date
+        updated_at:
+          type: string
+          format: date
+    Message:
+      type: object
+      properties:
+        content:
+          type: string
+        status:
+          type: string
+        created_at:
+          type: string
+          format: date
+        udpated_at:
+          type: string
+          format: date
+        user:
+          $ref: '#/components/schemas/User'
+      required:
+        - user
+        - status
+        - content
+    Emergency:
+      type: object
+      properties:
+        type:
+          type: string
+          enum: [Bushfire, Tsunami, Typhoon, Thunderstorm]
+        severity:
+          type: string
+          enum: [Emergency, Medium, Relax]
+        longitude:
+          type: string
+        latitude:
+          type: string
+        createdAt:
+          type: string
+          format: date
+      required:
+        - type
+        - severity
+        - longitude
+        - latitude
+    MatchingPost:
+      type: object
+      properties:
+        message:
+          $ref: '#/components/schemas/Message'
+        match_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        read_by_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        created_at:
+          type: string
+          format: date
+        udpated_at:
+          type: string
+          format: date
+      required:
+        - message
+        - match_users
+    PaginationResponse:
+      type: object
+      properties:
+        total:
+          type: integer
+        current:
+          type: integer
+        limit:
+          type: integer
+        data:
+          type: array
+          items:
+            type: object
+      required:
+        - total
+        - current
+        - limit
+        - data
+    Channel:
+      type: object
+      properties:
+        name:
+          type: string
+        users:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        unread_messages_count:
+          type: integer
+        id:
+          type: string
+      required:
+        - name
+        - id
+        - users
+    Error:
+      type: object
+      properties:
+        error:
+          description: Type of the error
+          type: string
+          enum:
+            - ValidationError
+            - AuthenticationError
+            - AuthorizationError
+            - NotFoundError
+        message:
+          description: Displayable message for the error
+          type: string
+      required:
+        - error
+        - message
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+security:
+  - BearerAuth: []
+  - cookieAuth: []

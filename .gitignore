@@ -1,0 +1,13 @@
+globalConfig.json
+.swp
+# Coverage directory used by tools like istanbul
+coverage
+*.lcov
+
+node_modules/
+static/
+dist
+yarn-error.log
+
+# General
+.DS_Store

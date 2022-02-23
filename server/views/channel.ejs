@@ -1,0 +1,158 @@
+<div class="container pt-4">
+  <div class="row">
+    <div class="col-sm-12 border-bottom">
+      <div class="input-group mb-3">
+        <input
+          type="text"
+          class="form-control"
+          id="search-private"
+          placeholder="Search <%= isPublic ? 'Public' : 'Private' %>"
+        />
+        <div class="input-group-append">
+          <button class="btn btn-secondary" id="search-button" type="button">
+            Search
+          </button>
+        </div>
+      </div>
+      <p class="help-text">
+        Tip: If you want to see other user's status update history, type in
+        keyword <code>status</code>
+      </p>
+    </div>
+    <% if (title === 'Announcements' && user.role === 'citizen') { %>
+    <div></div>
+    <% } else { %>
+    <div class="col-sm-12">
+      <form class="my-2 row" id="message-form">
+        <div class="form-group col-12">
+          <h4 class="mb-3"><%= title %></h4>
+          <textarea
+            class="form-control"
+            id="content"
+            name="content"
+            rows="3"
+            placeholder="Place your message here"
+          ></textarea>
+        </div>
+        <div class="d-flex justify-content-between col-12 form-group">
+          <% if (isPublic && title === 'Public message') { -%>
+          <div class="dropdown mr-2">
+            <button
+              class="btn btn-outline-secondary dropdown-toggle"
+              role="button"
+              id="help-dropdown"
+              data-toggle="dropdown"
+            >
+              Select help types
+            </button>
+            <div id="help-list" class="dropdown-menu">
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="first aid responder"
+                  id="defaultCheck1"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck1">
+                  First aid responder
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="healthcare worker"
+                  id="defaultCheck2"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck2">
+                  Healthcare worker
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="machinery operator"
+                  id="defaultCheck3"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck3">
+                  Machinery operator
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="rescuer"
+                  id="defaultCheck4"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck4">
+                  Rescuer
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="technician"
+                  id="defaultCheck5"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck5">
+                  Technician
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="firefighter"
+                  id="defaultCheck6"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck6">
+                  Firefighter
+                </label>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="mx-2 form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  value="law enforcement officer"
+                  id="defaultCheck7"
+                />
+                <label class="text-muted form-check-label" for="defaultCheck7">
+                  Law enforcement officer
+                </label>
+              </div>
+            </div>
+          </div>
+          <% } %>
+          <button type="submit" class="btn btn-primary btn-block">Post</button>
+        </div>
+      </form>
+    </div>
+    <% } %>
+    <div class="col-12">
+      <div id="messages"></div>
+    </div>
+    <div class="col-sm-12">
+      <button
+        class="btn btn-block btn-secondary my-3"
+        style="display: none;"
+        value="1"
+        id="load-more"
+      >
+        Load more
+      </button>
+    </div>
+  </div>
+</div>
+<script>
+  window.channelId = '<%= channelId %>';
+</script>
+<script src="/channel.js"></script>

@@ -1,0 +1,187 @@
+<div class="container">
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="emergencyNoticeModal"
+    tabindex="-1"
+    aria-labelledby="emergencyNoticeModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="emergencyNoticeModalLabel">
+            Contact your local authority
+          </h5>
+          <button
+            type="button"
+            class="close"
+            data-dismiss="modal"
+            aria-label="Close"
+          >
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Please call 911 for any emergency assistance! Take care!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" data-dismiss="modal">
+            Okay
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div
+    class="modal fade"
+    id="reportEmergencyModal"
+    tabindex="-1"
+    aria-labelledby="reportEmergencyModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <form id="reportForm">
+          <div class="modal-header">
+            <h5 class="modal-title" id="reportEmergencyModalLabel">
+              Report an emergency
+            </h5>
+            <button
+              type="button"
+              class="close"
+              data-dismiss="modal"
+              aria-label="Close"
+            >
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <div class="col-12 form-group">
+              <label for="type-select">Type of emergency</label>
+              <select
+                id="type-select"
+                class="form-control"
+                name="type"
+                required
+              >
+                <option value="" disabled selected>Select a type</option>
+                <option value="Bushfire">Bushfire</option>
+                <option value="Cyclone">Cyclone</option>
+                <option value="Thunderstorm">Thunderstorm</option>
+                <option value="Tsunami">Tsunami</option>
+              </select>
+            </div>
+            <div class="col-12 form-group">
+              <label for="severity-select">Severity</label>
+              <select
+                id="severity-select"
+                class="form-control"
+                name="severity"
+                required
+              >
+                <option value="" disabled selected>Select a severity</option>
+                <option value="Emergency">Emergency</option>
+                <option value="Medium">Medium</option>
+                <option value="Relax">Relax</option>
+              </select>
+            </div>
+            <div class="col-12 form-group hidden" id="form-injured">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="people-injured"
+                  name="injured"
+                />
+                <label for="people-injured">People Injured?</label>
+              </div>
+            </div>
+            <div class="col-12 form-group">
+              <div class="form-check">
+                <input
+                  class="form-check-input"
+                  type="checkbox"
+                  id="use-location"
+                  name="useLocation"
+                  required
+                />
+                <label for="use-location">Use current location</label>
+              </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-dismiss="modal"
+            >
+              Cancel
+            </button>
+            <button type="submit" class="btn btn-primary">Report</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="alert-container"></div>
+
+  <h5 class="col-12 pl-0">
+    Reported Emergency near you
+  </h5>
+
+  <div class="row justify-content-center">
+    <div class="form-group">
+      <button
+        type="button"
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#reportEmergencyModal"
+      >
+        Report a case
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-6">
+      <ul class="list-unstyled">
+        <li><span class="color-example bg-danger"> </span> = Emergency</li>
+        <li><span class="color-example bg-info"> </span> = Medium</li>
+        <li><span class="color-example bg-success"> </span> = Relax</li>
+      </ul>
+    </div>
+    <div class="col-6 form-group">
+      <label for="time-range-select">Time Range</label>
+      <select
+        id="time-range-select"
+        class="form-control"
+        name="timeRange"
+        required
+      >
+        <option value="24" selected>24 hours</option>
+        <option value="48">48 hours</option>
+        <option value="168">1 week</option>
+      </select>
+    </div>
+    <div class="col-12">
+      <div>
+        <table class="table table-sm">
+          <thead class="thead-light">
+            <tr>
+              <th>Type</th>
+              <th class="center">Injured</th>
+              <th class="center">When</th>
+              <th class="center">Distance</th>
+            </tr>
+          </thead>
+          <tbody id="emergency-list"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/emergencies.js"></script>

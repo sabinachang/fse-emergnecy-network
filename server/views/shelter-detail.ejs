@@ -1,0 +1,53 @@
+<div class="container pt-3">
+  <div class="d-flex justify-content-between">
+    <h3><%= shelter.name %></h3>
+    <div>
+      <% if (shelter._id.equals(user.shelter)) { -%>
+      <button class="btn btn-danger" id="checkout">Check-out</button>
+      <% } else { -%>
+      <button class="btn btn-success" id="checkin">Check-in</button>
+      <% } -%>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <h4>Address: <small><%= shelter.address %></small></h4>
+    </div>
+    <div class="col-12">
+      <p><%= shelter.description %></p>
+    </div>
+  </div>
+  <div id="map" style="height: 200px;" class="py-2"></div>
+  <% if (users.length > 0) { -%>
+  <div class="row" style="margin-top: 5%;">
+    <div class="col-12">
+      <h5>Registered users</h5>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td>Username</td>
+            <td>Active status</td>
+            <td>Status</td>
+          </tr>
+        </thead>
+        <tbody>
+          <% users.forEach((user) => { -%>
+          <tr class="user-item" style="cursor: pointer;">
+            <td><%= user.username %></td>
+            <td><%= user.active ? 'Active' : 'Inactive' -%></td>
+            <td><%= user.status || 'None' -%></td>
+          </tr>
+
+          <% }) -%>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <% } -%>
+</div>
+<script>
+  window.shelter = <%- JSON.stringify(shelter) %>;
+  window.user = <%- JSON.stringify(user) %>;
+  window.username = "<%= user.username %>";
+</script>
+<script src="/shelter-detail.js"></script>

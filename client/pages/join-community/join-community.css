@@ -1,0 +1,18 @@
+.register-form {
+  padding: 10%;
+}
+
+.form-title {
+  text-align: center;
+  font-family: Chalkduster, fantasy;
+}
+
+.form-button {
+  width: 100%;
+  background-color: green;
+  margin-top: 30px;
+}
+
+.list-group-item small {
+  text-align: start;
+}

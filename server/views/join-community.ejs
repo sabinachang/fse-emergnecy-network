@@ -1,0 +1,60 @@
+<div class="h-100 d-flex align-items-center pt-4">
+  <div class="container">
+    <h1 class="mx-4 mb-4 display-4">Emergency Social Network</h1>
+    <div class="d-flex">
+      <div class="jumbotron d-none col-lg-7 col-xl-7 d-lg-inline d-xl-inline">
+        <p class="lead">
+          Providing civilians with a social network that they can use during
+          emergency situations. The system is different from other existing
+          social networks because it is specifically designed to effectively
+          support small communities of civilians seriously affected in case of
+          natural disasters like earthquake, tsunami, tornado, wildfire, etc.
+        </p>
+        <p><strong>Join to explore more!</strong></p>
+      </div>
+
+      <div class="ml-md-4 flex-fill">
+        <form
+          action="/api/users"
+          method="POST"
+          id="registerForm"
+          class="needs-validation"
+          novalidate
+        >
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              class="form-control"
+              id="username"
+              placeholder="Enter username"
+              required
+            />
+            <div class="invalid-feedback">
+              username must have at least 3 characters
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              id="password"
+              placeholder="Password"
+              required
+            />
+            <div class="invalid-feedback">
+              Password must have at least 4 characters
+            </div>
+          </div>
+          <button type="submit" class="btn btn-success btn-block">
+            Join
+          </button>
+        </form>
+      </div>
+    </div>
+    <hr class="my-4" />
+  </div>
+
+  <script src="/join-community.js"></script>
+</div>
